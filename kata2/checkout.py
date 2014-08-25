@@ -1,3 +1,4 @@
+import math
 
 
 class Checkout(object):
@@ -45,6 +46,12 @@ class Apple(Fruit):
 class Cherry(Fruit):
     def __init__(self, num):
         super().__init__('Cherry', num, 5)
+
+    def calc_price(self):
+        total = super().calc_price()
+
+        return total - (math.floor(self.num / 3) * 7.5)
+
 
 
 class Mango(Fruit):

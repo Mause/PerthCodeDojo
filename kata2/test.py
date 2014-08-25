@@ -28,10 +28,18 @@ class TestCheckout(unittest.TestCase):
             Cherry(10)
         ])
         self.assertTotal(
-            50 +  # cherries 5 * 10
+            50 - (7.5 * 3) +  # cherries
             12 +  # mangoes 3 * 4
             1     # apples 2 * 0.5
         )
+
+    def test_cheaper_cherries(self):
+        self.register.add_to_cart(Cherry(3))
+        self.assertTotal(15 - 7.5)
+
+    def test_cheaper_cherries_assumption(self):
+        self.register.add_to_cart(Cherry(6))
+        self.assertTotal(15)
 
 
 def main():
