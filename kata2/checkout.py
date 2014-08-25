@@ -4,6 +4,7 @@ import math
 class Checkout(object):
     def __init__(self):
         self.items = []
+        self.discounts = []
 
     def add_to_cart(self, item):
         assert isinstance(item, Item)
@@ -13,8 +14,26 @@ class Checkout(object):
         self.items.extend(items)
 
     def calculate_total(self) -> int:
-        return sum(
+        total = sum(
             item.calc_price()
+            for item in self.items
+        )
+
+        for discount in self.discounts:
+            total *= discount
+
+        return total
+
+    def apply_discount(self, percentage):
+        self.discounts.append(percentage)
+
+    def reciept(self):
+        return '\n'.join(
+            ' * {} {}s for ${:.2f}'.format(
+                item.num,
+                item.name,
+                item.calc_price()
+            )
             for item in self.items
         )
 
@@ -47,11 +66,20 @@ class Cherry(Fruit):
     def __init__(self, num):
         super().__init__('Cherry', num, 5)
 
+    def apply_discount(self, total):
+        discount = math.floor(self.num / 3) * 7.5
+
+        return total - discount
+
     def calc_price(self):
         total = super().calc_price()
 
-        return total - (math.floor(self.num / 3) * 7.5)
+        return self.apply_discount(total)
 
+
+class RottenCherry(Cherry):
+    def apply_discount(self, total):
+        return total * .8
 
 
 class Mango(Fruit):
