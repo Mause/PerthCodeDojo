@@ -8,6 +8,9 @@ class Checkout(object):
         assert isinstance(item, Item)
         self.items.append(item)
 
+    def add_multiple(self, items):
+        self.items.extend(items)
+
     def calculate_total(self) -> int:
         return sum(
             item.calc_price()
@@ -22,7 +25,7 @@ class Item(object):
         self.price = price
 
     def calc_price(self):
-        return self.num
+        return self.num * self.price
 
 
 class Fruit(Item):

@@ -1,5 +1,5 @@
 import unittest
-from checkout import Apple, Checkout
+from checkout import Apple, Cherry, Checkout, Mango
 
 
 class TestCheckout(unittest.TestCase):
@@ -19,6 +19,19 @@ class TestCheckout(unittest.TestCase):
         self.assertEqual(
             self.register.calculate_total(),
             2.5
+        )
+
+    def test_multiple_fruit(self):
+        self.register.add_multiple([
+            Apple(2),
+            Mango(4),
+            Cherry(10)
+        ])
+        self.assertEqual(
+            self.register.calculate_total(),
+            50 +  # cherries 5 * 10
+            12 +  # mangoes 3 * 4
+            1     # apples 2 * 0.5
         )
 
 
