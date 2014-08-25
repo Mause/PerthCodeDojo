@@ -9,6 +9,9 @@ class TestCheckout(unittest.TestCase):
     def assertTotal(self, price):
         self.assertEqual(self.register.calculate_total(), price)
 
+    def test_empty_cart(self):
+        self.assertTotal(0)
+
     def test_basic_checkout(self):
         self.register.add_to_cart(Apple(1))
         self.assertTotal(.5)
