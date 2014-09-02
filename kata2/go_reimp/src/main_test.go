@@ -1,24 +1,24 @@
 package main
 
 import (
-    "testing"
-    "fmt"
-    "github.com/stretchr/testify/assert"
+	"fmt"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func assertTotal(t *testing.T, register *Checkout, price float64) {
-    calculated := register.calculate_total()
+	calculated := register.calculate_total()
 
 	assert.Equal(
-        t,
-        calculated,
-        price,
-        fmt.Sprintf(
-            "calculated $%.2f != $%.2f",
-            calculated,
-            price,
-        ),
-    )
+		t,
+		calculated,
+		price,
+		fmt.Sprintf(
+			"calculated $%.2f != $%.2f",
+			calculated,
+			price,
+		),
+	)
 }
 
 func TestEmptyCart(t *testing.T) {
@@ -94,7 +94,7 @@ func TestVeryBasic(t *testing.T) {
 
 func TestSplitApples(t *testing.T) {
 	register := NewCheckout()
-    register.apply_discount_function(discount_apple)
+	register.apply_discount_function(discount_apple)
 
 	register.add_to_cart("apple", 2)
 	register.add_to_cart("apple", 1)
@@ -102,11 +102,11 @@ func TestSplitApples(t *testing.T) {
 }
 
 func TestDiscountedCherry(t *testing.T) {
-    register := NewCheckout()
-    register.apply_discount_function(discount_cherry);
+	register := NewCheckout()
+	register.apply_discount_function(discount_cherry)
 
-    register.add_to_cart("rotten_cherry", 5)
-    assertTotal(t, register, 25 * .8)
+	register.add_to_cart("rotten_cherry", 5)
+	assertTotal(t, register, 25*.8)
 }
 
 func TestTotalDiscount(t *testing.T) {

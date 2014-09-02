@@ -20,16 +20,16 @@ func NewCheckout() *Checkout {
 		discount_functions: make([]discounter, 0),
 		discounts:          make([]float64, 0),
 		prices: map[string]float64{
-			"apple":  0.5,
-			"cherry": 5,
+			"apple":         0.5,
+			"cherry":        5,
 			"rotten_cherry": 5 * .8,
-			"mango":  3,
+			"mango":         3,
 		},
 	}
 }
 
 func (self *Checkout) add_to_cart(item string, amount int) {
-	if (self.prices[item] == 0) {
+	if self.prices[item] == 0 {
 		fmt.Printf("%s is an invalid item\n", item)
 		return
 	}
@@ -64,33 +64,37 @@ func (self *Checkout) apply_discount(percentage float64) {
 	self.discounts = append(self.discounts, percentage)
 }
 
-func (self *Checkout) receipt() (string) {
-    result := "";
+func (self *Checkout) receipt() string {
+	result := ""
 
-    for name, amount := range self.cart {
-        result += fmt.Sprintf(
-            " * %d %ss for $%.2f",
-            amount,
-            name,
-            self.prices[name],
-        )
-    }
+	for name, amount := range self.cart {
+		result += fmt.Sprintf(
+			" * %d %ss for $%.2f",
+			amount,
+			name,
+			self.prices[name],
+		)
+	}
 
-    return result;
+	return result
 }
 
 func discount_apple(cart map[string]int, total float64) float64 {
 	apples := cart["apple"]
-	if apples == 0 { return total }
+	if apples == 0 {
+		return total
+	}
 
-	return total - (math.Floor(float64(apples / 3)) * .5)
+	return total - (math.Floor(float64(apples/3)) * .5)
 }
 
 func discount_cherry(cart map[string]int, total float64) float64 {
 	cherries := cart["cherry"]
-	if cherries == 0 { return total }
+	if cherries == 0 {
+		return total
+	}
 
-	return total - math.Floor(float64(cherries/3.0)) * 7.5
+	return total - math.Floor(float64(cherries/3.0))*7.5
 }
 
 func main() {
