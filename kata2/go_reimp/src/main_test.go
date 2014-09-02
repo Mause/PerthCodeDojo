@@ -1,14 +1,24 @@
 package main
 
 import (
-	// "main"
-	"testing"
+    "testing"
+    "fmt"
+    "github.com/stretchr/testify/assert"
 )
 
 func assertTotal(t *testing.T, register *Checkout, price float64) {
-	if register.calculate_total() != price {
-		t.Fail()
-	}
+    calculated := register.calculate_total()
+
+	assert.Equal(
+        t,
+        calculated,
+        price,
+        fmt.Sprintf(
+            "calculated $%.2f != $%.2f",
+            calculated,
+            price,
+        ),
+    )
 }
 
 func TestEmptyCart(t *testing.T) {
@@ -18,7 +28,7 @@ func TestEmptyCart(t *testing.T) {
 
 func TestBasicCheckout(t *testing.T) {
 	register := NewCheckout()
-	register.add_many("apple", 1)
+	register.add_to_cart("apple", 1)
 	assertTotal(t, register, .5)
 }
 
@@ -26,7 +36,7 @@ func TestThirdFreeCheckout(t *testing.T) {
 	register := NewCheckout()
 	register.apply_discount_function(discount_apple)
 
-	register.add_many("apple", 5)
+	register.add_to_cart("apple", 5)
 	assertTotal(t, register, 4.0*0.5)
 }
 
@@ -34,7 +44,7 @@ func TestSevenApples(t *testing.T) {
 	register := NewCheckout()
 	register.apply_discount_function(discount_apple)
 
-	register.add_many("apple", 7)
+	register.add_to_cart("apple", 7)
 	assertTotal(t, register, 2.5)
 }
 
@@ -43,9 +53,9 @@ func TestMultipleFruit(t *testing.T) {
 	register.apply_discount_function(discount_apple)
 	register.apply_discount_function(discount_cherry)
 
-	register.add_many("apple", 2)
-	register.add_many("mango", 4)
-	register.add_many("cherry", 10)
+	register.add_to_cart("apple", 2)
+	register.add_to_cart("mango", 4)
+	register.add_to_cart("cherry", 10)
 	assertTotal(
 		t,
 		register,
@@ -60,7 +70,7 @@ func TestCheaperCherries(t *testing.T) {
 	register := NewCheckout()
 	register.apply_discount_function(discount_cherry)
 
-	register.add_many("cherry", 3)
+	register.add_to_cart("cherry", 3)
 	assertTotal(t, register, 15-7.5)
 }
 
@@ -68,7 +78,7 @@ func TestCheaperCherriesAssumption(t *testing.T) {
 	register := NewCheckout()
 	register.apply_discount_function(discount_cherry)
 
-	register.add_many("cherry", 6)
+	register.add_to_cart("cherry", 6)
 	assertTotal(t, register, 15)
 }
 
@@ -77,35 +87,35 @@ func TestVeryBasic(t *testing.T) {
 	register.apply_discount_function(discount_apple)
 	register.apply_discount_function(discount_cherry)
 
-	register.add_many("apple", 2)
-	register.add_many("cherry", 3)
+	register.add_to_cart("apple", 2)
+	register.add_to_cart("cherry", 3)
 	assertTotal(t, register, 7.5+1)
 }
 
-// func TestSplitApples(t *testing.T) {
-//     register := NewCheckout()
-//     register.add_multiple([
-//         Apple(2),
-//         Apple(1)
-//     ])
-//     assertTotal(t, register, 2 * .5)
-// }
+func TestSplitApples(t *testing.T) {
+	register := NewCheckout()
+    register.apply_discount_function(discount_apple)
 
-// func TestDiscountedCherry(t *testing.T) {
-//     register := NewCheckout()
-//     register.apply_discount_function(discount_cherry);
+	register.add_to_cart("apple", 2)
+	register.add_to_cart("apple", 1)
+	assertTotal(t, register, 2*.5)
+}
 
-//     register.add_many("rottencherry", 5)
-//     assertTotal(t, register, 25 * .8)
-// }
+func TestDiscountedCherry(t *testing.T) {
+    register := NewCheckout()
+    register.apply_discount_function(discount_cherry);
+
+    register.add_to_cart("rotten_cherry", 5)
+    assertTotal(t, register, 25 * .8)
+}
 
 func TestTotalDiscount(t *testing.T) {
 	register := NewCheckout()
 	register.apply_discount_function(discount_apple)
 
-	register.add_many("cherry", 2)
-	register.add_many("apple", 6)
-	register.add_many("mango", 1)
+	register.add_to_cart("cherry", 2)
+	register.add_to_cart("apple", 6)
+	register.add_to_cart("mango", 1)
 	register.apply_discount(.2)
 
 	assertTotal(t, register, 3)

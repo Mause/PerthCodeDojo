@@ -5,8 +5,6 @@ import (
 	"math"
 )
 
-const ()
-
 type discounter func(map[string]int, float64) float64
 
 type Checkout struct {
@@ -24,26 +22,27 @@ func NewCheckout() *Checkout {
 		prices: map[string]float64{
 			"apple":  0.5,
 			"cherry": 5,
+			"rotten_cherry": 5 * .8,
 			"mango":  3,
 		},
 	}
 }
 
-func (self *Checkout) add_to_cart(item string)          { self.cart[item]++ }
-func (self *Checkout) add_many(item string, amount int) { self.cart[item] += amount }
-func (self *Checkout) clear_cart() {
-	self.cart = make(map[string]int)
+func (self *Checkout) add_to_cart(item string, amount int) {
+	if (self.prices[item] == 0) {
+		fmt.Printf("%s is an invalid item\n", item)
+		return
+	}
+	self.cart[item] += amount
 }
 
 func (self *Checkout) calculate_total() float64 {
 	var total float64 = 0
 
 	for key, value := range self.cart {
-		// fmt.Printf("%d %ss\n", value, key)
 		total += float64(value) * self.prices[key]
 	}
 
-	// fmt.Printf("Discount functions: %d\n", len(self.discount_functions))
 	for discount_function := range self.discount_functions {
 		total = self.discount_functions[discount_function](
 			self.cart, total,
@@ -84,27 +83,14 @@ func discount_apple(cart map[string]int, total float64) float64 {
 	apples := cart["apple"]
 	if apples == 0 { return total }
 
-	duos := math.Floor(float64(apples / 3))
-
-	return total - (duos * .5)
+	return total - (math.Floor(float64(apples / 3)) * .5)
 }
 
 func discount_cherry(cart map[string]int, total float64) float64 {
 	cherries := cart["cherry"]
 	if cherries == 0 { return total }
 
-	var discount float64 = math.Floor(float64(cherries/3.0)) * 7.5
-
-	return total - discount
-}
-
-func discount_rotten_cherry(cart map[string]int, total float64) float64 {
-	rotten_cherries := cart["rotten_cherries"]
-	if rotten_cherries == 0 {
-		return total
-	}
-
-	return total
+	return total - math.Floor(float64(cherries/3.0)) * 7.5
 }
 
 func main() {
@@ -113,8 +99,8 @@ func main() {
 	register.apply_discount_function(discount_apple)
 	register.apply_discount_function(discount_cherry)
 
-	register.add_to_cart("apple")
-	register.add_many("apple", 2)
+	register.add_to_cart("apple", 1)
+	register.add_to_cart("apple", 2)
 
 	fmt.Printf(
 		"%f\n",
