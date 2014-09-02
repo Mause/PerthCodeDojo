@@ -56,11 +56,11 @@ func (self *Checkout) calculate_total() float64 {
 	return total
 }
 
-func (self *Checkout) apply_discount_function(function discounter) {
+func (self *Checkout) add_discount_function(function discounter) {
 	self.discount_functions = append(self.discount_functions, function)
 }
 
-func (self *Checkout) apply_discount(percentage float64) {
+func (self *Checkout) add_discount(percentage float64) {
 	self.discounts = append(self.discounts, percentage)
 }
 
@@ -85,7 +85,7 @@ func discount_apple(cart map[string]int, total float64) float64 {
 		return total
 	}
 
-	return total - (math.Floor(float64(apples/3)) * .5)
+	return total - (math.Floor(float64(apples/3.0)) * 0.5)
 }
 
 func discount_cherry(cart map[string]int, total float64) float64 {
@@ -94,14 +94,14 @@ func discount_cherry(cart map[string]int, total float64) float64 {
 		return total
 	}
 
-	return total - math.Floor(float64(cherries/3.0))*7.5
+	return total - (math.Floor(float64(cherries/3.0)) * 7.5)
 }
 
 func main() {
 	register := NewCheckout()
 
-	register.apply_discount_function(discount_apple)
-	register.apply_discount_function(discount_cherry)
+	register.add_discount_function(discount_apple)
+	register.add_discount_function(discount_cherry)
 
 	register.add_to_cart("apple", 1)
 	register.add_to_cart("apple", 2)

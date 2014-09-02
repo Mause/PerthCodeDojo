@@ -34,7 +34,7 @@ func TestBasicCheckout(t *testing.T) {
 
 func TestThirdFreeCheckout(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_apple)
+	register.add_discount_function(discount_apple)
 
 	register.add_to_cart("apple", 5)
 	assertTotal(t, register, 4.0*0.5)
@@ -42,7 +42,7 @@ func TestThirdFreeCheckout(t *testing.T) {
 
 func TestSevenApples(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_apple)
+	register.add_discount_function(discount_apple)
 
 	register.add_to_cart("apple", 7)
 	assertTotal(t, register, 2.5)
@@ -50,8 +50,8 @@ func TestSevenApples(t *testing.T) {
 
 func TestMultipleFruit(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_apple)
-	register.apply_discount_function(discount_cherry)
+	register.add_discount_function(discount_apple)
+	register.add_discount_function(discount_cherry)
 
 	register.add_to_cart("apple", 2)
 	register.add_to_cart("mango", 4)
@@ -68,7 +68,7 @@ func TestMultipleFruit(t *testing.T) {
 
 func TestCheaperCherries(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_cherry)
+	register.add_discount_function(discount_cherry)
 
 	register.add_to_cart("cherry", 3)
 	assertTotal(t, register, 15-7.5)
@@ -76,7 +76,7 @@ func TestCheaperCherries(t *testing.T) {
 
 func TestCheaperCherriesAssumption(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_cherry)
+	register.add_discount_function(discount_cherry)
 
 	register.add_to_cart("cherry", 6)
 	assertTotal(t, register, 15)
@@ -84,8 +84,8 @@ func TestCheaperCherriesAssumption(t *testing.T) {
 
 func TestVeryBasic(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_apple)
-	register.apply_discount_function(discount_cherry)
+	register.add_discount_function(discount_apple)
+	register.add_discount_function(discount_cherry)
 
 	register.add_to_cart("apple", 2)
 	register.add_to_cart("cherry", 3)
@@ -94,7 +94,7 @@ func TestVeryBasic(t *testing.T) {
 
 func TestSplitApples(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_apple)
+	register.add_discount_function(discount_apple)
 
 	register.add_to_cart("apple", 2)
 	register.add_to_cart("apple", 1)
@@ -103,7 +103,7 @@ func TestSplitApples(t *testing.T) {
 
 func TestDiscountedCherry(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_cherry)
+	register.add_discount_function(discount_cherry)
 
 	register.add_to_cart("rotten_cherry", 5)
 	assertTotal(t, register, 25*.8)
@@ -111,12 +111,12 @@ func TestDiscountedCherry(t *testing.T) {
 
 func TestTotalDiscount(t *testing.T) {
 	register := NewCheckout()
-	register.apply_discount_function(discount_apple)
+	register.add_discount_function(discount_apple)
 
 	register.add_to_cart("cherry", 2)
 	register.add_to_cart("apple", 6)
 	register.add_to_cart("mango", 1)
-	register.apply_discount(.2)
+	register.add_discount(.2)
 
 	assertTotal(t, register, 3)
 }
