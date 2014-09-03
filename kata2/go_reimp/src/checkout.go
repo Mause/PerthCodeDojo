@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"math"
 )
@@ -30,13 +31,16 @@ func NewCheckout() *Checkout {
 	return c
 }
 
-func (self *Checkout) AddToCart(item string, amount int) {
+func (self *Checkout) AddToCart(item string, amount int) error {
 	if self.prices[item] == 0 {
-		fmt.Printf("%s is an invalid item\n", item)
-		return
+		return errors.New(fmt.Sprintf(
+			"%s is an invalid item\n", item,
+		))
 	}
 
 	self.cart[item] += amount
+
+	return nil
 }
 
 func (self *Checkout) CalculateTotal() float64 {

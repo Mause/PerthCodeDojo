@@ -121,3 +121,11 @@ func TestTotalDiscount(t *testing.T) {
 
 	assertTotal(t, register, 3)
 }
+
+func TestErrorOnInvalidItem(t *testing.T) {
+	register := NewCheckout()
+
+	err := register.AddToCart("invalid", 0)
+
+	assert.Error(t, err, "Shouldn't accept an item we don't recognize")
+}
