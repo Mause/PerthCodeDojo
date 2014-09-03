@@ -28,7 +28,7 @@ func NewCheckout() *Checkout {
 	}
 }
 
-func (self *Checkout) add_to_cart(item string, amount int) {
+func (self *Checkout) AddToCart(item string, amount int) {
 	if self.prices[item] == 0 {
 		fmt.Printf("%s is an invalid item\n", item)
 		return
@@ -36,7 +36,7 @@ func (self *Checkout) add_to_cart(item string, amount int) {
 	self.cart[item] += amount
 }
 
-func (self *Checkout) calculate_total() float64 {
+func (self *Checkout) CalculateTotal() float64 {
 	var total float64 = 0
 
 	for key, value := range self.cart {
@@ -56,11 +56,11 @@ func (self *Checkout) calculate_total() float64 {
 	return total
 }
 
-func (self *Checkout) add_discount_function(function discounter) {
+func (self *Checkout) AddDiscountFunction(function discounter) {
 	self.discount_functions = append(self.discount_functions, function)
 }
 
-func (self *Checkout) add_discount(percentage float64) {
+func (self *Checkout) AddDiscount(percentage float64) {
 	self.discounts = append(self.discounts, percentage)
 }
 
@@ -100,14 +100,11 @@ func discount_cherry(cart map[string]int, total float64) float64 {
 func main() {
 	register := NewCheckout()
 
-	register.add_discount_function(discount_apple)
-	register.add_discount_function(discount_cherry)
+	register.AddDiscountFunction(discount_apple)
+	register.AddDiscountFunction(discount_cherry)
 
-	register.add_to_cart("apple", 1)
-	register.add_to_cart("apple", 2)
+	register.AddToCart("apple", 1)
+	register.AddToCart("apple", 2)
 
-	fmt.Printf(
-		"%f\n",
-		register.calculate_total(),
-	)
+	fmt.Printf(register.receipt() + "\n")
 }
