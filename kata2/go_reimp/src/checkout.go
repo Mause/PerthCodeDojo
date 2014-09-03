@@ -15,17 +15,19 @@ type Checkout struct {
 }
 
 func NewCheckout() *Checkout {
-	return &Checkout{
+	c := &Checkout{
 		cart:               make(map[string]int),
 		discount_functions: make([]discounter, 0),
 		discounts:          make([]float64, 0),
 		prices: map[string]float64{
-			"apple":         0.5,
-			"cherry":        5,
-			"rotten_cherry": 5 * .8,
-			"mango":         3,
+			"apple":  0.5,
+			"cherry": 5,
+			"mango":  3,
 		},
 	}
+	c.prices["rotten_cherry"] = c.prices["cherry"] * .8
+
+	return c
 }
 
 func (self *Checkout) AddToCart(item string, amount int) {
@@ -33,6 +35,7 @@ func (self *Checkout) AddToCart(item string, amount int) {
 		fmt.Printf("%s is an invalid item\n", item)
 		return
 	}
+
 	self.cart[item] += amount
 }
 
@@ -43,14 +46,10 @@ func (self *Checkout) CalculateTotal() float64 {
 		total += float64(value) * self.prices[key]
 	}
 
-	for discount_function := range self.discount_functions {
-		total = self.discount_functions[discount_function](
+	for i := range self.discount_functions {
+		total = self.discount_functions[i](
 			self.cart, total,
 		)
-	}
-
-	for discount := range self.discounts {
-		total *= self.discounts[discount]
 	}
 
 	return total
@@ -61,7 +60,11 @@ func (self *Checkout) AddDiscountFunction(function discounter) {
 }
 
 func (self *Checkout) AddDiscount(percentage float64) {
-	self.discounts = append(self.discounts, percentage)
+	self.AddDiscountFunction(
+		func(cart map[string]int, total float64) float64 {
+			return total * percentage
+		},
+	)
 }
 
 func (self *Checkout) receipt() string {
