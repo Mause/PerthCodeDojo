@@ -8,7 +8,7 @@ import (
 )
 
 func readJson(t *testing.T, filename string) Garden {
-	raw_json_result, err := ioutil.ReadFile("japanese_garden.json.out.json")
+	raw_json_result, err := ioutil.ReadFile(filename)
 	assert.Nil(t, err)
 	var json_result Garden
 	err = json.Unmarshal(raw_json_result, &json_result)
