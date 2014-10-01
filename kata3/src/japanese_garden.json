@@ -1,0 +1,16 @@
+{
+  "MaxX": 80,
+  "MaxY": 20,
+  "MinX": 0,
+  "MinY": 0,
+  "Soil": {"Name": "silt"},
+  "Grid": [
+    [
+      {"PlantType": "Ornate Bridge"}
+    ],
+    [
+      {"PlantType": "Tree"},
+      {"PlantType": "Tree"}
+    ]
+  ]
+}
