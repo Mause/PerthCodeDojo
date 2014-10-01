@@ -51,7 +51,7 @@ func GardenFunction(filename string) {
 		panic(err)
 	}
 
-	s, err := json.Marshal(gd)
+	s, err := json.MarshalIndent(gd, "", "\t")
 	if err != nil {
 		panic(err)
 	}
