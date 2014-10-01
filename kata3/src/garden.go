@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"time"
-	// "github.com/pquerna/ffjson"
 )
 
 type Position struct {
@@ -13,7 +12,7 @@ type Position struct {
 }
 
 type SoilType struct {
-	name string
+	Name string
 }
 
 type Hydration struct {
@@ -21,63 +20,52 @@ type Hydration struct {
 }
 
 type Garden struct {
-	max_x, MaxY, min_x, min_y int
-	soil                      *SoilType
-	hyd                       *Hydration
-	plantings                 []interface{}
+	MaxX, MaxY, MinX, MinY int
+	Soil                   *SoilType
+	Grid                   [][]GridCell
 }
 
-type Planting struct {
-	position   *Position
-	plant_type string
-}
-
-type Tree struct {
-	position   *Position
-	plant_type string
-}
-
-type Flower struct {
-	position   *Position
-	plant_type string
-}
-
-func NewTree(x int, y int) *Tree {
-	return &Tree{position: &Position{x, y}}
-}
-
-func NewFlower(x int, y int) *Flower {
-	return &Flower{position: &Position{x, y}}
-}
-
-func NewGarden() *Garden {
-	items := make([]interface{}, 3)
-	items = append(items, NewTree(0, 0))
-	items = append(items, NewFlower(1, 1))
-	items = append(items, NewFlower(2, 1))
-
-	return &Garden{
-		max_x: 50,
-		MaxY:  10,
-		min_x: 0,
-		min_y: 0,
-
-		plantings: items,
+func (self *Garden) Mulch() {
+	for row := range self.Grid {
+		for cell := range self.Grid[row] {
+			self.Grid[row][cell].Mulched = true
+		}
 	}
 }
 
-func main() {
-	b, err := ioutil.ReadFile("garden.json")
+type GridCell struct {
+	Position  *Position
+	PlantType string
+	Mulched   bool
+	Hyd       *Hydration
+}
+
+func GardenFunction(filename string) {
+	b, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic("Argh!")
 	}
 
-	gd := &Garden{}
-	err = json.Unmarshal(b, gd)
+	var gd Garden
+	err = json.Unmarshal(b, &gd)
 	if err != nil {
 		fmt.Println(err)
 		panic("...damn")
 	}
 
-	fmt.Printf("Done: %d\n", gd.MaxY)
+	s, err := json.Marshal(gd)
+	if err != nil {
+		fmt.Println(err)
+		panic(":(")
+	}
+	ioutil.WriteFile(
+		filename+".out.json",
+		s,
+		0644,
+	)
+}
+
+func main() {
+	GardenFunction("garden.json")
+	GardenFunction("japanese_garden.json")
 }
