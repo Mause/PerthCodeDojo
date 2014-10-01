@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"time"
 )
@@ -43,20 +42,18 @@ type GridCell struct {
 func GardenFunction(filename string) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
-		panic("Argh!")
+		panic(err)
 	}
 
 	var gd Garden
 	err = json.Unmarshal(b, &gd)
 	if err != nil {
-		fmt.Println(err)
-		panic("...damn")
+		panic(err)
 	}
 
 	s, err := json.Marshal(gd)
 	if err != nil {
-		fmt.Println(err)
-		panic(":(")
+		panic(err)
 	}
 	ioutil.WriteFile(
 		filename+".out.json",
