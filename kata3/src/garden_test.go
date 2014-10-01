@@ -1,13 +1,13 @@
 package main
 
 import (
-    "encoding/json"
-    "github.com/stretchr/testify/assert"
-    "io/ioutil"
-    "testing"
+	"encoding/json"
+	"github.com/stretchr/testify/assert"
+	"io/ioutil"
+	"testing"
 )
 
-func ReadJson(t *testing.T, filename string) Garden {
+func readJson(t *testing.T, filename string) Garden {
 	raw_json_result, err := ioutil.ReadFile("japanese_garden.json.out.json")
 	assert.Nil(t, err)
 	var json_result Garden
@@ -17,15 +17,23 @@ func ReadJson(t *testing.T, filename string) Garden {
 	return json_result
 }
 
-func TestJapaneseGarden(t *testing.T) {
-	GardenFunction("japanese_garden.json")
+func testGarden(t *testing.T, filename string) {
+	GardenFunction(filename)
 
-	end_result := ReadJson(t, "japanese_garden.json.out.json")
-	original := ReadJson(t, "japanese_garden.json")
+	end_result := readJson(t, filename+".out.json")
+	original := readJson(t, filename)
 
 	assert.Equal(
 		t,
 		end_result,
 		original,
 	)
+}
+
+func TestJapaneseGarden(t *testing.T) {
+    testGarden(t, "japanese_garden.json")
+}
+
+func TestNormalGarden(t *testing.T) {
+    testGarden(t, "garden.json")
 }
